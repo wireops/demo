@@ -1,0 +1,18 @@
+name: prune-docker
+description: Removes dangling images, stopped containers, and unused networks
+cron: "0 5 * * 1"
+tags:
+  - local
+  - node
+group: maintenance
+mode: once_all
+image: alpine:3.20
+command:
+  - sh
+  - -c
+  - "echo 'demo job: would run `docker system prune -f` on the host'"
+network: bridge
+resources:
+  cpu: "0.25"
+  memory: 64m
+  timeout: 5m

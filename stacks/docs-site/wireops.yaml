@@ -5,5 +5,9 @@ timeout: 90s
 compose:
   remove_orphans: true
   force_pull: true
+worker:
+  tags:
+    - local
+    - node
 sync:
   interval: 2m

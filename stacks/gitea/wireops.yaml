@@ -9,6 +9,7 @@ jobs:
   wait_running: true
 worker:
   tags:
-    - dev-tools
+    - local
+    - node
 sync:
   interval: 5m

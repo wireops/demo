@@ -1,0 +1,18 @@
+name: gitea-db-vacuum
+description: Weekly VACUUM ANALYZE on the gitea Postgres database
+cron: "0 4 * * 0"
+tags:
+  - local
+  - node
+group: maintenance
+mode: once
+image: postgres:16-alpine
+command:
+  - sh
+  - -c
+  - "PGPASSWORD=demo psql -h gitea-db -U gitea -d gitea -c 'VACUUM ANALYZE;'"
+network: gitea_gitea-internal
+resources:
+  cpu: "0.5"
+  memory: 128m
+  timeout: 15m

@@ -23,8 +23,15 @@ tags and ports are chosen for a local screenshot pass, not for real deploys.
 
 ## Jobs
 
-- `jobs/nightly-backup` — cron-scheduled one-shot job (`job.yaml`), tars a
-  volume and prunes old backups.
+- `jobs/nightly-backup` — daily, `once`, tars a volume and prunes old backups.
+- `jobs/healthcheck-ping` — every 15 min, `once_all` (fans out to every
+  matching worker), curls each demo stack's exposed port.
+- `jobs/gitea-db-vacuum` — weekly, `once`, runs `VACUUM ANALYZE` against the
+  gitea stack's Postgres, targets the gitea stack's compose network directly.
+- `jobs/prune-docker` — weekly, `once_all`, demo docker cleanup job.
+
+All stacks and jobs target `worker.tags: [local, node]` — match those tags on
+whichever worker you connect to this demo.
 
 Point a wireops repository record at this repo, add a stack per `stacks/*`
-subdirectory (or a wildcard import), and schedule `jobs/nightly-backup`.
+subdirectory (or a wildcard import), and schedule each `jobs/*/job.yaml`.

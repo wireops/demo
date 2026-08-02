@@ -2,7 +2,8 @@ name: nightly-backup
 description: Tars up demo volumes and prunes backups older than 7 days
 cron: "0 3 * * *"
 tags:
-  - backup
+  - local
+  - node
 group: maintenance
 mode: once
 image: alpine:3.20

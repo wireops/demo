@@ -1,0 +1,18 @@
+name: healthcheck-ping
+description: Curls each demo stack's exposed port and logs the response code
+cron: "*/15 * * * *"
+tags:
+  - local
+  - node
+group: monitoring
+mode: once_all
+image: curlimages/curl:8.9.1
+command:
+  - sh
+  - -c
+  - "for url in http://host.docker.internal:18001 http://host.docker.internal:18010 http://host.docker.internal:18040 http://host.docker.internal:18050; do echo \"$url -> $(curl -o /dev/null -s -w '%{http_code}' \"$url\")\"; done"
+network: bridge
+resources:
+  cpu: "0.25"
+  memory: 64m
+  timeout: 2m
