@@ -1,0 +1,76 @@
+services:
+  gitea-db:
+    image: postgres:16-alpine
+    environment:
+      - POSTGRES_USER=gitea
+      - POSTGRES_PASSWORD=demo
+      - POSTGRES_DB=gitea
+    volumes:
+      - gitea-db-data:/var/lib/postgresql/data
+    networks:
+      - gitea-internal
+    labels:
+      - "customization.image.slug=postgresql"
+    restart: unless-stopped
+
+  gitea-cache:
+    image: redis:7-alpine
+    volumes:
+      - gitea-cache-data:/data
+    networks:
+      - gitea-internal
+    labels:
+      - "customization.image.slug=redis"
+    restart: unless-stopped
+
+  gitea:
+    image: gitea/gitea:1.22
+    depends_on:
+      - gitea-db
+      - gitea-cache
+    environment:
+      - GITEA__database__DB_TYPE=postgres
+      - GITEA__database__HOST=gitea-db:5432
+      - GITEA__database__NAME=gitea
+      - GITEA__database__USER=gitea
+      - GITEA__database__PASSWD=demo
+      - GITEA__cache__ADAPTER=redis
+      - GITEA__cache__HOST=redis://gitea-cache:6379/0
+      - GITEA__session__PROVIDER=redis
+      - GITEA__session__PROVIDER_CONFIG=redis://gitea-cache:6379/1
+    ports:
+      - "18040:3000"
+      - "18041:22"
+    volumes:
+      - gitea-data:/data
+    networks:
+      - gitea-internal
+      - gitea-public
+    labels:
+      - "customization.image.slug=gitea"
+    restart: unless-stopped
+
+  gitea-runner:
+    image: gitea/act_runner:0.2
+    depends_on:
+      - gitea
+    environment:
+      - GITEA_INSTANCE_URL=http://gitea:3000
+      - GITEA_RUNNER_REGISTRATION_TOKEN=demo-registration-token
+    volumes:
+      - gitea-runner-data:/data
+    networks:
+      - gitea-internal
+    labels:
+      - "customization.image.slug=gitea"
+    restart: unless-stopped
+
+networks:
+  gitea-internal: {}
+  gitea-public: {}
+
+volumes:
+  gitea-db-data: {}
+  gitea-cache-data: {}
+  gitea-data: {}
+  gitea-runner-data: {}

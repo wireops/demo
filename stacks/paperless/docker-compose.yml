@@ -1,0 +1,84 @@
+services:
+  paperless-db:
+    image: postgres:16-alpine
+    environment:
+      - POSTGRES_USER=paperless
+      - POSTGRES_PASSWORD=demo
+      - POSTGRES_DB=paperless
+    volumes:
+      - paperless-db-data:/var/lib/postgresql/data
+    networks:
+      - paperless-internal
+    labels:
+      - "customization.image.slug=postgresql"
+    restart: unless-stopped
+
+  paperless-broker:
+    image: redis:7-alpine
+    volumes:
+      - paperless-broker-data:/data
+    networks:
+      - paperless-internal
+    labels:
+      - "customization.image.slug=redis"
+    restart: unless-stopped
+
+  paperless-gotenberg:
+    image: gotenberg/gotenberg:8
+    command:
+      - "gotenberg"
+      - "--chromium-disable-javascript=true"
+      - "--chromium-allow-list=file:///tmp/.*"
+    networks:
+      - paperless-internal
+    restart: unless-stopped
+
+  paperless-tika:
+    image: apache/tika:2.9.2.1
+    networks:
+      - paperless-internal
+    labels:
+      - "customization.image.slug=apache-tika"
+    restart: unless-stopped
+
+  paperless-webserver:
+    image: ghcr.io/paperless-ngx/paperless-ngx:2.13
+    depends_on:
+      - paperless-db
+      - paperless-broker
+      - paperless-gotenberg
+      - paperless-tika
+    environment:
+      - PAPERLESS_REDIS=redis://paperless-broker:6379
+      - PAPERLESS_DBHOST=paperless-db
+      - PAPERLESS_DBNAME=paperless
+      - PAPERLESS_DBUSER=paperless
+      - PAPERLESS_DBPASS=demo
+      - PAPERLESS_TIKA_ENABLED=1
+      - PAPERLESS_TIKA_GOTENBERG_ENDPOINT=http://paperless-gotenberg:3000
+      - PAPERLESS_TIKA_ENDPOINT=http://paperless-tika:9998
+    ports:
+      - "18050:8000"
+    volumes:
+      - paperless-data:/usr/src/paperless/data
+      - paperless-media:/usr/src/paperless/media
+      - paperless-export:/usr/src/paperless/export
+      - paperless-consume:/usr/src/paperless/consume
+    networks:
+      - paperless-internal
+      - paperless-public
+    labels:
+      - "customization.image.slug=paperless-ngx"
+    restart: unless-stopped
+
+networks:
+  paperless-internal: {}
+  paperless-public: {}
+
+volumes:
+  paperless-db-data: {}
+  paperless-broker-data: {}
+  paperless-data: {}
+  paperless-media: {}
+  paperless-export: {}
+  paperless-consume: {}

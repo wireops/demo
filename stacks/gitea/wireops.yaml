@@ -1,0 +1,14 @@
+version: wireops.v1
+name: gitea
+group: dev-tools
+timeout: 3m
+compose:
+  remove_orphans: true
+  force_pull: false
+jobs:
+  wait_running: true
+worker:
+  tags:
+    - dev-tools
+sync:
+  interval: 5m

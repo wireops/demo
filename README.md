@@ -14,6 +14,12 @@ tags and ports are chosen for a local screenshot pass, not for real deploys.
 - `stacks/metrics-stack` — Prometheus + Grafana + node-exporter, multi-service
   with named volumes, an inline `configs:` scrape config, and a `worker.tags`
   example.
+- `stacks/gitea` — Gitea + Postgres + Redis + a runner, 4 services on 2
+  networks with a `depends_on` chain (runner → gitea → db/cache) and 4 named
+  volumes — good for showing off the dependency graph.
+- `stacks/paperless` — Paperless-ngx + Postgres + Redis + Gotenberg + Tika,
+  5 services, 2 networks, 6 named volumes, deepest dependency chain of the
+  set.
 
 ## Jobs
 

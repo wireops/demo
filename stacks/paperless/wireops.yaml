@@ -1,0 +1,12 @@
+version: wireops.v1
+name: paperless
+group: productivity
+timeout: 4m
+compose:
+  remove_orphans: true
+  force_pull: false
+worker:
+  tags:
+    - productivity
+sync:
+  interval: 5m
