@@ -3,12 +3,29 @@ services:
     image: nginx:1.27-alpine
     ports:
       - "18010:80"
-    volumes:
-      - ./html:/usr/share/nginx/html:ro
+    configs:
+      - source: docs_index
+        target: /usr/share/nginx/html/index.html
+    labels:
+      - "customization.image.slug=nginx"
     restart: unless-stopped
 
   whoami:
     image: traefik/whoami:v1.10
     ports:
       - "18011:80"
+    labels:
+      - "customization.image.slug=traefik"
     restart: unless-stopped
+
+configs:
+  docs_index:
+    content: |
+      <!doctype html>
+      <html lang="en">
+      <head><meta charset="utf-8"><title>wireops demo docs</title></head>
+      <body>
+      <h1>wireops demo</h1>
+      <p>Static docs stack served by nginx, deployed by wireops from this repo.</p>
+      </body>
+      </html>

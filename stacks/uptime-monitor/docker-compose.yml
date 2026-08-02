@@ -5,6 +5,8 @@ services:
       - "18001:3001"
     volumes:
       - uptime-kuma-data:/app/data
+    labels:
+      - "customization.image.slug=uptime-kuma"
     restart: unless-stopped
 
 volumes:

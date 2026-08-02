@@ -7,9 +7,13 @@ tags and ports are chosen for a local screenshot pass, not for real deploys.
 ## Stacks
 
 - `stacks/uptime-monitor` — Uptime Kuma, single service, minimal `wireops.yaml`.
-- `stacks/docs-site` — nginx + whoami, two services, bind-mounted static content.
+- `stacks/docs-site` — nginx + whoami, static page injected via inline
+  `configs:` (no bind mounts — the worker only ever receives the rendered
+  compose file, never the rest of the repo, so relative bind mounts to
+  sibling repo files don't resolve on deploy).
 - `stacks/metrics-stack` — Prometheus + Grafana + node-exporter, multi-service
-  with named volumes and a `worker.tags` example.
+  with named volumes, an inline `configs:` scrape config, and a `worker.tags`
+  example.
 
 ## Jobs
 
