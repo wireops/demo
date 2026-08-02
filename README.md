@@ -20,14 +20,19 @@ tags and ports are chosen for a local screenshot pass, not for real deploys.
 - `stacks/paperless` — Paperless-ngx + Postgres + Redis + Gotenberg + Tika,
   5 services, 2 networks, 6 named volumes, deepest dependency chain of the
   set.
-- `stacks/nginx-configs-demo` — nginx serving a static page, both the page
-  and the nginx config are separate files committed under `files/` and
-  declared by name in `wireops.yaml`'s `configs:` (`name` + `path`), then
-  referenced from `docker-compose.yml` via Compose's native `configs:`
-  element. Unlike `docs-site`/`metrics-stack` above (which inline the
-  content directly into `docker-compose.yml`), wireops resolves these from
-  the separate git files and embeds them into the rendered compose file at
-  deploy time — no bind mounts, no copy-pasting config content into YAML.
+- `stacks/nginx-configs-demo` — nginx serving a static page. No
+  `wireops.yaml` involvement at all: the service annotates
+  `dev.wireops.config.<name>: <repo-relative source>:<in-container target>`
+  directly, and wireops resolves the source straight from this repo
+  checkout and synthesizes the compose `configs:` block into the rendered
+  file at deploy time. Two annotations show both source shapes: `nginx-conf`
+  maps a single file (`files/nginx.conf`), and `html` maps a whole directory
+  (`files/html/`) — a directory source is expanded recursively, every file
+  under it becomes its own config entry mounted under the declared target.
+  Unlike `docs-site`/`metrics-stack` above (which hand-author a native
+  `configs:` block with inline content directly in `docker-compose.yml`),
+  this raw compose file never mentions `configs:` at all — no bind mounts,
+  no stub/placeholder entries, no copy-pasting config content into YAML.
 
 ## Jobs
 

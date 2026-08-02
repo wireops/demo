@@ -11,8 +11,3 @@ worker:
     - node
 sync:
   interval: 5m
-configs:
-  - name: nginx-conf
-    path: files/nginx.conf
-  - name: index-html
-    path: files/index.html
