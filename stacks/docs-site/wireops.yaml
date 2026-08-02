@@ -1,0 +1,9 @@
+version: wireops.v1
+name: docs-site
+group: web
+timeout: 90s
+compose:
+  remove_orphans: true
+  force_pull: true
+sync:
+  interval: 2m

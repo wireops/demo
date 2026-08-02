@@ -1,0 +1,20 @@
+name: nightly-backup
+description: Tars up demo volumes and prunes backups older than 7 days
+cron: "0 3 * * *"
+tags:
+  - backup
+group: maintenance
+mode: once
+image: alpine:3.20
+command:
+  - sh
+  - -c
+  - "tar -czf /backups/demo-$(date +%F).tar.gz /data && find /backups -name '*.tar.gz' -mtime +7 -delete"
+volumes:
+  - demo-data:/data:ro
+  - demo-backups:/backups
+network: bridge
+resources:
+  cpu: "0.5"
+  memory: 256m
+  timeout: 10m

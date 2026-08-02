@@ -1,0 +1,14 @@
+services:
+  docs:
+    image: nginx:1.27-alpine
+    ports:
+      - "18010:80"
+    volumes:
+      - ./html:/usr/share/nginx/html:ro
+    restart: unless-stopped
+
+  whoami:
+    image: traefik/whoami:v1.10
+    ports:
+      - "18011:80"
+    restart: unless-stopped

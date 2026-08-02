@@ -1,0 +1,12 @@
+version: wireops.v1
+name: metrics-stack
+group: monitoring
+timeout: 3m
+compose:
+  remove_orphans: true
+  force_pull: false
+worker:
+  tags:
+    - metrics
+sync:
+  interval: 5m
