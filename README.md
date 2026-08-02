@@ -22,12 +22,15 @@ tags and ports are chosen for a local screenshot pass, not for real deploys.
   set.
 - `stacks/nginx-configs-demo` — nginx serving a static page, both the page
   and the nginx config are separate files committed under `files/` and
-  declared by name in `wireops.yaml`'s `configs:` (`name` + `path`), then
-  referenced from `docker-compose.yml` via Compose's native `configs:`
-  element. Unlike `docs-site`/`metrics-stack` above (which inline the
-  content directly into `docker-compose.yml`), wireops resolves these from
-  the separate git files and embeds them into the rendered compose file at
-  deploy time — no bind mounts, no copy-pasting config content into YAML.
+  declared by name in `wireops.yaml`'s `configs:` (`name` + `path`). The
+  service just annotates which config it mounts and where
+  (`dev.wireops.config.<name>: <target>`) — wireops resolves the file
+  content server-side and synthesizes the compose `configs:` block into the
+  rendered file at deploy time. Unlike `docs-site`/`metrics-stack` above
+  (which hand-author a native `configs:` block with inline content directly
+  in `docker-compose.yml`), this raw compose file never mentions `configs:`
+  at all — no bind mounts, no stub/placeholder entries, no copy-pasting
+  config content into YAML.
 
 ## Jobs
 
