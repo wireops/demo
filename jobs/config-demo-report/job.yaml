@@ -1,0 +1,20 @@
+name: config-demo-report
+description: Demo of job.yaml `configs:` - runs a report script mounted read-only from a git file
+cron: "0 6 * * *"
+tags:
+  - local
+  - node
+group: maintenance
+mode: once
+image: alpine:3.20
+command:
+  - sh
+  - /scripts/report.sh
+configs:
+  - name: report-script
+    path: files/report.sh
+    target: /scripts/report.sh
+resources:
+  cpu: "0.25"
+  memory: 64m
+  timeout: 5m

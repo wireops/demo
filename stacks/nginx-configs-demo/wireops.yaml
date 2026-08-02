@@ -1,0 +1,18 @@
+version: wireops.v1
+name: nginx-configs-demo
+group: web
+timeout: 90s
+compose:
+  remove_orphans: true
+  force_pull: false
+worker:
+  tags:
+    - local
+    - node
+sync:
+  interval: 5m
+configs:
+  - name: nginx-conf
+    path: files/nginx.conf
+  - name: index-html
+    path: files/index.html
