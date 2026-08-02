@@ -1,0 +1,26 @@
+services:
+  web:
+    image: nginx:1.27-alpine
+    ports:
+      - "18060:80"
+    configs:
+      - source: nginx-conf
+        target: /etc/nginx/conf.d/default.conf
+      - source: index-html
+        target: /usr/share/nginx/html/index.html
+    labels:
+      - "customization.image.slug=nginx"
+    restart: unless-stopped
+
+# The configs referenced above are declared as name+path entries in
+# wireops.yaml (source: files/nginx.conf, files/index.html) and resolved by
+# the wireops server at deploy time — this repo never needs to ship the
+# actual file contents here. `external: true` is a placeholder that lets
+# `docker compose config` validate the file locally (config source must
+# exist at the top level); wireops overwrites it with the real resolved
+# `content:` before the rendered file reaches the worker.
+configs:
+  nginx-conf:
+    external: true
+  index-html:
+    external: true

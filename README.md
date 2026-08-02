@@ -20,6 +20,14 @@ tags and ports are chosen for a local screenshot pass, not for real deploys.
 - `stacks/paperless` — Paperless-ngx + Postgres + Redis + Gotenberg + Tika,
   5 services, 2 networks, 6 named volumes, deepest dependency chain of the
   set.
+- `stacks/nginx-configs-demo` — nginx serving a static page, both the page
+  and the nginx config are separate files committed under `files/` and
+  declared by name in `wireops.yaml`'s `configs:` (`name` + `path`), then
+  referenced from `docker-compose.yml` via Compose's native `configs:`
+  element. Unlike `docs-site`/`metrics-stack` above (which inline the
+  content directly into `docker-compose.yml`), wireops resolves these from
+  the separate git files and embeds them into the rendered compose file at
+  deploy time — no bind mounts, no copy-pasting config content into YAML.
 
 ## Jobs
 
@@ -29,6 +37,11 @@ tags and ports are chosen for a local screenshot pass, not for real deploys.
 - `jobs/gitea-db-vacuum` — weekly, `once`, runs `VACUUM ANALYZE` against the
   gitea stack's Postgres, targets the gitea stack's compose network directly.
 - `jobs/prune-docker` — weekly, `once_all`, demo docker cleanup job.
+- `jobs/config-demo-report` — daily, `once`, demonstrates `job.yaml`'s
+  `configs:` (`name` + `path` + `target`): `files/report.sh` is a plain git
+  file, resolved server-side and bind-mounted read-only into the job
+  container at `/scripts/report.sh` — the worker never clones this repo, it
+  only receives the resolved script content in the dispatch command.
 
 All stacks and jobs target `worker.tags: [local, node]` — match those tags on
 whichever worker you connect to this demo.
