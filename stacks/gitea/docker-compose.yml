@@ -51,7 +51,7 @@ services:
     restart: unless-stopped
 
   gitea-runner:
-    image: gitea/act_runner:0.2
+    image: gitea/act_runner:0.2.6
     depends_on:
       - gitea
     environment:
