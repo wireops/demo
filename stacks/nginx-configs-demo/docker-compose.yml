@@ -3,16 +3,15 @@ services:
     image: nginx:1.27-alpine
     ports:
       - "18060:80"
-    # The configs themselves are declared as name+path entries in
-    # wireops.yaml (source: files/nginx.conf, files/index.html). This
-    # annotation just tells wireops which of those configs this service
-    # mounts and where — the server resolves the file content and
-    # synthesizes the actual compose `configs:` block into the rendered
-    # file, so this raw compose file never needs to declare `configs:`
-    # itself, no stub/placeholder entries needed.
+    # dev.wireops.config.<name>: "<repo-relative source>:<in-container target>"
+    # No wireops.yaml involvement at all — the server resolves the source
+    # straight from this repo checkout and synthesizes the compose
+    # `configs:` block into the rendered file. A directory source (like
+    # files/html below) is expanded recursively: every file under it becomes
+    # its own config entry, mounted under the declared target directory.
     annotations:
-      dev.wireops.config.nginx-conf: /etc/nginx/conf.d/default.conf
-      dev.wireops.config.index-html: /usr/share/nginx/html/index.html
+      dev.wireops.config.nginx-conf: files/nginx.conf:/etc/nginx/conf.d/default.conf
+      dev.wireops.config.html: files/html:/usr/share/nginx/html
     labels:
       - "customization.image.slug=nginx"
     restart: unless-stopped
