@@ -1,6 +1,6 @@
 services:
   web:
-    image: nginx:1.27-alpine
+    image: nginx:1.31.3-alpine3.24
     environment:
       - PORT=${PORT:-18060}
     ports:
